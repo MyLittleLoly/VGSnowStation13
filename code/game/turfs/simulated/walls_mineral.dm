@@ -160,6 +160,6 @@
 		if(!(W in capable_of_penetrating))
 			return
 		else
-			new/obj/effect/decal/cleanable/rubble(src)
+			new/obj/effect/decal/cleanable/soot(src)
 			Del(src)
 			return

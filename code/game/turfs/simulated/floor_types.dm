@@ -58,6 +58,7 @@
 				update_icon()
 				name = n
 
+
 /turf/simulated/floor/wood
 	name = "floor"
 	icon_state = "wood"
@@ -218,6 +219,7 @@
 	..()
 	overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=MOB_LAYER+0.1)
 
+
 /turf/simulated/floor/grass
 	name = "Grass patch"
 	icon_state = "grass1"
@@ -268,8 +270,12 @@
 /turf/simulated/floor/plating/snow
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
-	icon_state = "snow"
+	icon_state = "snow0"
 	temperature = 230
+
+	New()
+		..()
+		icon_state = "snow[rand(0,6)]"
 
 /turf/simulated/floor/plating/snow/concrete
 	name = "concrete"
