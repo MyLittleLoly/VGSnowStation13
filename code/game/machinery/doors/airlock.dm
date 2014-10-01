@@ -33,6 +33,7 @@
 	var/locked = 0
 	var/lights = 1 // bolt lights show by default
 	var/datum/wires/airlock/wires = null
+	autoignition_temperature = 1073
 	secondsElectrified = 0 //How many seconds remain until the door is no longer electrified. -1 if it is permanently electrified until someone fixes it.
 	var/aiDisabledIdScanner = 0
 	var/aiHacking = 0
@@ -162,6 +163,7 @@
 	name = "Airlock"
 	icon = 'icons/obj/doors/doorresearch.dmi'
 	assembly_type = /obj/structure/door_assembly/door_assembly_research
+	autoignition_temperature = 30000
 
 /obj/machinery/door/airlock/glass_research
 	name = "Maintenance Hatch"
@@ -170,6 +172,7 @@
 	assembly_type = /obj/structure/door_assembly/door_assembly_research
 	glass = 1
 	heat_proof = 1
+	autoignition_temperature = 30000
 
 /obj/machinery/door/airlock/glass_mining
 	name = "Maintenance Hatch"
@@ -226,6 +229,7 @@
 	mineral = "plasma"
 
 	autoignition_temperature = 300
+	fire_fuel = 10
 
 /obj/machinery/door/airlock/plasma/ignite(temperature)
 	PlasmaBurn(temperature)
@@ -239,7 +243,8 @@
 		napalm.toxins = toxinsToDeduce
 		napalm.temperature = 400+T0C
 		target_tile.assume_air(napalm)
-		spawn (0) target_tile.hotspot_expose(temperature, 400)
+		spawn (0)
+			target_tile.hotspot_expose(temperature, 400, surfaces=1)
 	for(var/obj/structure/falsewall/plasma/F in range(3,src))//Hackish as fuck, but until fire_act works, there is nothing I can do -Sieve
 		var/turf/T = get_turf(F)
 		T.ChangeTurf(/turf/simulated/wall/mineral/plasma/)
@@ -939,7 +944,6 @@ About the new airlock wires panel:
 			// TODO: analyze the called proc
 			if (shock(user, 100))
 				return
-
 	if (!p_open)
 		..(user)
 	//else

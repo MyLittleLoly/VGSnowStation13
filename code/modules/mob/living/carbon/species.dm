@@ -7,6 +7,7 @@
 
 	var/icobase = 'icons/mob/human_races/r_human.dmi'    // Normal icon set.
 	var/deform = 'icons/mob/human_races/r_def_human.dmi' // Mutated icon set.
+	var/override_icon = null                             // DMI for overriding the icon.  states: [lowertext(species.name)]_[gender][fat?"_fat":""]
 	var/eyes = "eyes_s"                                  // Icon for eyes.
 
 	var/primitive                // Lesser form, if any (ie. monkey for humans)
@@ -14,6 +15,8 @@
 	var/language                 // Default racial language, if any.
 	var/attack_verb = "punch"    // Empty hand hurt intent verb.
 	var/punch_damage = 0		 // Extra empty hand attack damage.
+	var/punch_throw_range = 0
+	var/punch_throw_speed = 1
 	var/mutantrace               // Safeguard due to old code.
 
 	var/breath_type = "oxygen"   // Non-oxygen gas breathed, if any.
@@ -27,7 +30,11 @@
 	var/heat_level_2 = 400  // Heat damage level 2 above this point.
 	var/heat_level_3 = 1000 // Heat damage level 2 above this point.
 
+	var/fireloss_mult = 1
+
 	var/darksight = 2
+	var/throw_mult = 1 // Default mob throw_mult.
+
 	var/hazard_high_pressure = HAZARD_HIGH_PRESSURE   // Dangerously high pressure.
 	var/warning_high_pressure = WARNING_HIGH_PRESSURE // High pressure warning.
 	var/warning_low_pressure = WARNING_LOW_PRESSURE   // Low pressure warning.
@@ -60,9 +67,11 @@
 	var/belt_icons      = 'icons/mob/belt.dmi'
 	var/wear_suit_icons = 'icons/mob/suit.dmi'
 	var/wear_mask_icons = 'icons/mob/mask.dmi'
+	var/base_color
 	var/back_icons      = 'icons/mob/back.dmi'
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
+
 	//This is a basic humanoid limb setup.
 	H.organs = list()
 	H.organs_by_name["chest"] = new/datum/organ/external/chest()
@@ -294,6 +303,7 @@
 	attack_verb = "scratch"
 	punch_damage = 5
 	primitive = /mob/living/carbon/monkey/unathi
+	base_color = "#066000"
 	darksight = 3
 
 	cold_level_1 = 280 //Default 260 - Lower is better
@@ -304,7 +314,7 @@
 	heat_level_2 = 480 //Default 400
 	heat_level_3 = 1100 //Default 1000
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL | HAS_SKIN_COLOR
 
 	flesh_color = "#34AF10"
 
@@ -338,6 +348,7 @@
 	tail = "tajtail"
 	attack_verb = "scratch"
 	punch_damage = 5
+	base_color = "#000000"
 	darksight = 8
 
 	cold_level_1 = 200 //Default 260
@@ -350,7 +361,7 @@
 
 	primitive = /mob/living/carbon/monkey/tajara
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL | HAS_SKIN_COLOR
 
 	flesh_color = "#AFA59E"
 
@@ -366,7 +377,7 @@
 			"silly rabbit",
 			"sandwich", // won't work too well with plurals OH WELL
 			"recolor",
-			"party pooper"
+			"party foxy"
 		)
 	)
 	filter.addWordReplacement("me","meow")
@@ -383,14 +394,14 @@
 		message = ""
 		if(prob(50))
 			message = pick(
-				"GOD, PLEASE",
-				"NO, GOD",
-				"AGGGGGGGH",
+				"MEOW!",
+				"Purr. Purr.",
+				"Raaaawr!",
 			)+" "
 		message += pick(
-			"KILL ME",
-			"END MY SUFFERING",
-			"I CAN'T DO THIS ANYMORE",
+			"Meowl!",
+			"Surrrf",
+			"Mooowrl",
 		)
 		return message
 	if(copytext(message, 1, 2) != "*")
@@ -415,6 +426,10 @@
 	// Both must be set or it's only a 45% chance of manifesting.
 	default_mutations=list(M_REMOTE_TALK)
 	default_block_names=list("REMOTETALK")
+
+	equip(var/mob/living/carbon/human/H)
+		H.gender = "male"
+		H.prev_gender = "male"
 
 /datum/species/muton // /vg/
 	name = "Muton"
@@ -447,7 +462,7 @@
 	language = "Skrellian"
 	primitive = /mob/living/carbon/monkey/skrell
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR
 
 	flesh_color = "#8CD7A3"
 
@@ -456,6 +471,8 @@
 	icobase = 'icons/mob/human_races/r_vox.dmi'
 	deform = 'icons/mob/human_races/r_def_vox.dmi'
 	language = "Vox-pidgin"
+
+	survival_gear = /obj/item/weapon/storage/box/survival/vox
 
 	warning_low_pressure = 50
 	hazard_low_pressure = 0
@@ -555,3 +572,29 @@
 	blood_color = "#004400"
 	flesh_color = "#907E4A"
 
+/datum/species/ipc
+	name = "IPC"
+	icobase = 'icons/mob/human_races/r_machine.dmi'
+	deform = 'icons/mob/human_races/r_machine.dmi'
+	language = "Sol Common"
+	attack_verb = "bumps"
+	punch_damage = 3
+	primitive = /mob/living/carbon/monkey/
+	darksight = 3
+
+	cold_level_1 = 220 //Default 260 - Lower is better
+	cold_level_2 = 180 //Default 200
+	cold_level_3 = 100 //Default 120
+
+	heat_level_1 = 560 //Default 360 - Higher is better
+	heat_level_2 = 680 //Default 400
+	heat_level_3 = 1100 //Default 1000
+
+	flags = IS_WHITELISTED | NO_BREATHE | NO_BLOOD | NO_PAIN
+
+	blood_color = "#000000"
+	flesh_color = "#333333"
+
+	equip(var/mob/living/carbon/human/H)
+		H.gender = "male"
+		H.prev_gender = "male"

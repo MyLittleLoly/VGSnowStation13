@@ -521,14 +521,7 @@
 	parts = /obj/item/weapon/table_parts/wood
 	health = 50
 	autoignition_temperature = AUTOIGNITION_WOOD // TODO:  Special ash subtype that looks like charred table legs.
-
-/obj/structure/table/woodentable/Del()
-	..()
-	var/obj/structure/closet/crate/drawers/D = null
-	for(var/direrction in list(1,2,4,8))
-	D = locate(/obj/structure/closet/crate/drawers, get_step(src, dir))
-	D.Del()
-
+	fire_fuel = 5
 
 
 /obj/structure/table/woodentable/poker //No specialties, Just a mapping object.
@@ -537,13 +530,6 @@
 	icon_state = "pokertable"
 	parts = /obj/item/weapon/table_parts/wood/poker
 
-
-/obj/structure/closet/crate/drawers
-	name = "drawers"
-	desc = "A wooden containers mounted under the tesktop."
-	icon_state = "drawersclosed"
-	anchored = 1
-	density = 0
 /*
  * Reinforced tables
  */

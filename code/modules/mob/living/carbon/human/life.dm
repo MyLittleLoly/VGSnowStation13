@@ -28,6 +28,7 @@ var/global/list/brutefireloss_overlays = list("1" = image("icon" = 'icons/mob/sc
 	var/oxygen_alert = 0
 	var/toxins_alert = 0
 	var/fire_alert = 0
+	var/havecancer = 0
 	var/pressure_alert = 0
 	var/prev_gender = null // Debug for plural genders
 	var/temperature_alert = 0
@@ -1380,6 +1381,23 @@ var/global/list/brutefireloss_overlays = list("1" = image("icon" = 'icons/mob/sc
 			if (getToxLoss() >= 45 && nutrition > 20)
 				vomit()
 
+			if((air_master.current_cycle % 3) == 0)
+				if (getToxLoss() >= 40)
+					var/chancesick = (getToxLoss() / 4)
+					if(havecancer == 0)
+						if(prob(chancesick))
+							havecancer = 1
+				if(havecancer)
+					if(prob(10))
+						Get_Cancer()
+					if(prob(20))
+						emote("cough")
+					if(src.radiation >= 50)
+						havecancer = 0
+						src.h_style = "Bald"
+						src.f_style = "Shaved"
+						src.update_hair()
+
 			// No hair for radroaches
 			if(src.radiation >= 50)
 				src.h_style = "Bald"
@@ -1400,14 +1418,14 @@ var/global/list/brutefireloss_overlays = list("1" = image("icon" = 'icons/mob/sc
 			if(B.virus2.len)
 				for (var/ID in B.virus2)
 					var/datum/disease2/disease/V = B.virus2[ID]
-					if (infect_virus2(src,V))
+					if (infect_virus2(src,V, notes="(Airborne from blood)"))
 						return 1
 
 		for(var/obj/effect/decal/cleanable/mucus/M in get_turf(src))
 			if(M.virus2.len)
 				for (var/ID in M.virus2)
 					var/datum/disease2/disease/V = M.virus2[ID]
-					if (infect_virus2(src,V))
+					if (infect_virus2(src,V, notes="(Airborne from mucus)"))
 						return 1
 		return 0
 	proc/handle_virus_updates()
@@ -1531,28 +1549,42 @@ var/global/list/brutefireloss_overlays = list("1" = image("icon" = 'icons/mob/sc
 		if(status_flags & FAKEDEATH)
 			temp = PULSE_NONE		//pretend that we're dead. unlike actual death, can be inflienced by meds
 
+		//handles different chems' influence on pulse
 		for(var/datum/reagent/R in reagents.reagent_list)
 			if(R.id in bradycardics)
 				if(temp <= PULSE_THREADY && temp >= PULSE_NORM)
 					temp--
-					break		//one reagent is enough
-								//comment out the breaks to make med effects stack
-		for(var/datum/reagent/R in reagents.reagent_list)				//handles different chems' influence on pulse
+
 			if(R.id in tachycardics)
 				if(temp <= PULSE_FAST && temp >= PULSE_NONE)
 					temp++
-					break
-		for(var/datum/reagent/R in reagents.reagent_list) //To avoid using fakedeath
-			if(R.id in heartstopper)
+
+			if(R.id in heartstopper) //To avoid using fakedeath
 				temp = PULSE_NONE
-				break
-		for(var/datum/reagent/R in reagents.reagent_list) //Conditional heart-stoppage
-			if(R.id in cheartstopper)
+
+			if(R.id in cheartstopper)  //Conditional heart-stoppage
 				if(R.volume >= R.overdose)
 					temp = PULSE_NONE
-					break
 
 		return temp
+
+/mob/living/carbon/human/proc/Get_Cancer()
+	if(!(ishuman(src)))
+		return
+	var/obj/item/weapon/implant/cancer/imp = new(src)
+
+
+
+	if(imp.implanted(src))
+		imp.loc = src
+		imp.imp_in = src
+		imp.implanted = 1
+		var/mob/living/carbon/human/H = src
+		var/datum/organ/external/affected = H.get_organ(randorgan())
+		affected.implants += imp
+		imp.part = affected
+
+	return
 
 /mob/living/carbon/human/proc/randorgan()
 	var/randorgan = pick("head","chest","l_arm","r_arm","l_hand","r_hand","groin","l_leg","r_leg","l_foot","r_foot")

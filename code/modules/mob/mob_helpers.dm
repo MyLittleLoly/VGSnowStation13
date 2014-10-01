@@ -258,7 +258,10 @@ proc/hasorgans(A)
 
 	return zone
 
-
+// adds stars to a text to obfuscate it
+// var/n -> text to obfuscate
+// var/pr -> percent of the text to obfuscate
+// return -> obfuscated text
 /proc/stars(n, pr)
 	if (pr == null)
 		pr = 25
@@ -318,7 +321,7 @@ proc/slur(phrase)
 	return newphrase
 
 /proc/stutter(text)
-	text = html_decode(text)
+	text = sanitize_uni(text)
 	var/t = ""
 	var/lenght = length(text)//length of the entire word
 	var/alphabet[0]

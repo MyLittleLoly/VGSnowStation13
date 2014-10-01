@@ -37,8 +37,11 @@
 	name = "floor"
 	icon_state = "wood"
 	floor_tile = new/obj/item/stack/tile/wood
+
 	autoignition_temperature = AUTOIGNITION_WOOD
-	autoignition_temperature = AUTOIGNITION_WOOD
+	fire_fuel = 10
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
 
 /turf/simulated/floor/light
 	name = "Light floor"
@@ -46,7 +49,6 @@
 	icon_state = "light_on"
 	floor_tile = new/obj/item/stack/tile/light
 
-/turf/simulated/floor/light/neutral
 	New()
 		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
 		var/n = name //just in case commands rename it in the ..() call
@@ -56,98 +58,15 @@
 				update_icon()
 				name = n
 
-/turf/simulated/floor/light/red
-	name = "Light floor"
-	luminosity = 5
-	icon_state = "light_on-r"
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				name = n
-				icon_state = "light_on-r"
-
-/turf/simulated/floor/light/yellow
-	name = "Light floor"
-	luminosity = 5
-	icon_state = "light_on-y"
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				icon_state = "light_on-y"
-				name = n
-
-/turf/simulated/floor/light/green
-	name = "Light floor"
-	luminosity = 5
-	icon_state = "light_on-g"
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				icon_state = "light_on-g"
-				name = n
-
-/turf/simulated/floor/light/blue
-	name = "Light floor"
-	luminosity = 5
-	icon_state = "light_on-b"
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				icon_state = "light_on-b"
-				name = n
-
-/turf/simulated/floor/light/purpule
-	name = "Light floor"
-	luminosity = 5
-	icon_state = "light_on-p"
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				icon_state = "light_on-p"
-				name = n
-
-/turf/simulated/floor/light/dance
-	name = "Dancefloor"
-	icon = 'icons/turf/dancefloor.dmi'
-	icon_state = "light_on-rainbow-shift0"
-	var/shift = 0
-
-	attack_hand(user)
-		return
-
-	New()
-		floor_tile.New() //I guess New() isn't run on objects spawned without the definition of a turf to house them, ah well.
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if(src)
-				icon_state = "light_on-rainbow-shift[shift]"
-				name = n
-
 /turf/simulated/floor/wood
 	name = "floor"
 	icon_state = "wood"
 	floor_tile = new/obj/item/stack/tile/wood
+
+	autoignition_temperature = AUTOIGNITION_WOOD
+	fire_fuel = 10
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
 
 /turf/simulated/floor/vault
 	icon_state = "rockvault"
@@ -168,6 +87,9 @@
 	icon_state = "engine"
 	thermal_conductivity = 0.025
 	heat_capacity = 325000
+
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
 
 /turf/simulated/floor/engine/attackby(obj/item/weapon/C as obj, mob/user as mob)
 	if(!C)
@@ -250,6 +172,9 @@
 	heat_capacity = 0
 	layer = 2
 
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
+
 /turf/simulated/shuttle/wall
 	name = "wall"
 	icon_state = "wall1"
@@ -273,6 +198,8 @@
 /turf/simulated/floor/beach
 	name = "Beach"
 	icon = 'icons/misc/beach.dmi'
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
 
 /turf/simulated/floor/beach/sand
 	name = "Sand"
@@ -290,10 +217,6 @@
 /turf/simulated/floor/beach/water/New()
 	..()
 	overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=MOB_LAYER+0.1)
-
-/turf/simulated/floor/beach/water/pool
-	name = "Pool"
-	icon_state = "water4"
 
 /turf/simulated/floor/grass
 	name = "Grass patch"
@@ -345,11 +268,8 @@
 /turf/simulated/floor/plating/snow
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
-	icon_state = "snow0"
-
-	New()
-		..()
-		icon_state = "snow[rand(0,6)]"
+	icon_state = "snow"
+	temperature = 230
 
 /turf/simulated/floor/plating/snow/concrete
 	name = "concrete"
@@ -386,6 +306,9 @@
 	lighting_lumcount = 4		//starlight
 
 	intact = 0
+
+	soot_type = null
+	melt_temperature = 0 // Doesn't melt.
 
 	New()
 		..()

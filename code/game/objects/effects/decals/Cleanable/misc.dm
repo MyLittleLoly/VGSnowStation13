@@ -10,6 +10,7 @@
 
 /obj/effect/decal/cleanable/ash
 	name = "ashes"
+	autoignition_temperature = 0
 	desc = "Ashes to ashes, dust to dust, and into space."
 	gender = PLURAL
 	icon = 'icons/obj/objects.dmi'
@@ -148,12 +149,15 @@
 	icon = 'icons/effects/tomatodecal.dmi'
 	random_icon_states = list("smashed_pie")
 
-/obj/effect/decal/cleanable/rubble
-	name = "concrate rubble"
-	desc = "A concrate construction junk."
-	density = 1
-	anchored = 0
-	layer = 2
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "wreckage"
+/obj/effect/decal/cleanable/soot
+	name = "soot"
+	desc = "One hell of a party..."
+	gender = PLURAL
+	icon = 'icons/effects/tile_effects.dmi'
+	icon_state = "tile_soot"
+	anchored = 1
+	layer=2
 
+/obj/effect/decal/cleanable/soot/New()
+	..()
+	dir = pick(cardinal)

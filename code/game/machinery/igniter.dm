@@ -37,7 +37,7 @@
 	if (src.on && !(stat & NOPOWER) )
 		var/turf/location = src.loc
 		if (isturf(location))
-			location.hotspot_expose(1000,500,1)
+			location.hotspot_expose(1000,500,1,surfaces=0)
 	return 1
 
 /obj/machinery/igniter/proc/toggle_state()
@@ -86,6 +86,7 @@
 	var/disable = 0
 	var/last_spark = 0
 	var/base_state = "migniter"
+	autoignition_temperature = 0
 	anchored = 1
 
 	ghost_read = 0 // Deactivate ghost touching.
@@ -142,7 +143,7 @@
 	use_power(1000)
 	var/turf/location = src.loc
 	if (isturf(location))
-		location.hotspot_expose(1000,500,1)
+		location.hotspot_expose(1000,500,1,surfaces=0)
 	return 1
 
 /obj/machinery/sparker/emp_act(severity)

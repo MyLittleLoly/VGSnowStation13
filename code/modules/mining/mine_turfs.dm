@@ -5,8 +5,8 @@
 
 /turf/unsimulated/mineral //wall piece
 	name = "Rock"
-	icon = 'icons/turf/polar.dmi'
-	icon_state = "rich5"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "rock"
 	oxygen = 0
 	nitrogen = 0
 	opacity = 1
@@ -175,7 +175,7 @@
 					target_turf.MineralSpread()
 
 /turf/unsimulated/mineral/proc/UpdateMineral()
-	icon_state = "rich3"
+	icon_state = "rock"
 	if(!mineral)
 		name = "\improper Rock"
 		return
@@ -449,8 +449,8 @@
 
 /turf/unsimulated/floor/asteroid //floor piece
 	name = "Asteroid"
-	icon = 'icons/turf/ground.dmi'
-	icon_state = "ground_frozen"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "asteroid"
 	oxygen = 0.01
 	nitrogen = 0.01
 	temperature = TCMB
@@ -463,8 +463,8 @@
 
 	name = proper_name
 
-//	if(prob(20))
-//		icon_state = "asteroid[rand(0,12)]"
+	if(prob(20))
+		icon_state = "asteroid[rand(0,12)]"
 	spawn(2)
 		updateMineralOverlays()
 
@@ -556,20 +556,20 @@
 	new/obj/item/weapon/ore/glass(src)
 	dug = 1
 	//icon_plating = "asteroid_dug"
-	icon_state = "ground_dug"
+	icon_state = "asteroid_dug"
 	return
 
 /turf/unsimulated/floor/asteroid/proc/updateMineralOverlays()
 	src.overlays.Cut()
 
 	if(istype(get_step(src, NORTH), /turf/unsimulated/mineral))
-		src.overlays += image('icons/turf/polar.dmi', "bluedgeN")
+		src.overlays += image('icons/turf/walls.dmi', "rock_side_n")
 	if(istype(get_step(src, SOUTH), /turf/unsimulated/mineral))
-		src.overlays += image('icons/turf/polar.dmi', "bluedgeS", layer=6)
+		src.overlays += image('icons/turf/walls.dmi', "rock_side_s", layer=6)
 	if(istype(get_step(src, EAST), /turf/unsimulated/mineral))
-		src.overlays += image('icons/turf/polar.dmi', "bluedgeE", layer=6)
+		src.overlays += image('icons/turf/walls.dmi', "rock_side_e", layer=6)
 	if(istype(get_step(src, WEST), /turf/unsimulated/mineral))
-		src.overlays += image('icons/turf/polar.dmi', "bluedgeW", layer=6)
+		src.overlays += image('icons/turf/walls.dmi', "rock_side_w", layer=6)
 
 /turf/unsimulated/floor/asteroid/proc/fullUpdateMineralOverlays()
 	var/turf/unsimulated/floor/asteroid/A
@@ -624,6 +624,7 @@
 		"Gibtonite" = 5,
 		"Diamond"   = 1,
 		"Cave"      = 1,
+		/*
 		"Pharosium"  = 5,
 		"Char"  = 5,
 		"Claretine"  = 5,
@@ -637,12 +638,13 @@
 		"Cerenkite"  = 5,
 		"Molitz"  = 5,
 		"Cytine"  = 5
+		*/
 	)
 	//Currently, Adamantine won't spawn as it has no uses. -Durandan
 	var/mineralChance = 10  //means 10% chance of this plot changing to a mineral deposit
 
 /turf/unsimulated/mineral/random/New()
-	icon_state = "rich[rand(1,6)]"
+	icon_state = "rock"
 	if (prob(mineralChance) && !mineral)
 		var/mineral_name = pickweight(mineralSpawnChanceList) //temp mineral name
 
@@ -668,6 +670,7 @@
 		"Gold"    = 10,
 		"Silver"  = 10,
 		"Plasma"  = 25,
+		/*
 		"Pharosium"  = 5,
 		"Char"  = 5,
 		"Claretine"  = 5,
@@ -681,6 +684,7 @@
 		"Cerenkite"  = 5,
 		"Molitz"  = 5,
 		"Cytine"  = 5
+		*/
 	)
 
 /turf/unsimulated/mineral/random/high_chance_clown
@@ -692,6 +696,7 @@
 		"Diamond" = 2,
 		"Gold"    = 5,
 		"Silver"  = 5,
+		/*
 		"Pharosium"  = 1,
 		"Char"  = 1,
 		"Claretine"  = 1,
@@ -705,6 +710,7 @@
 		"Cerenkite"  = 1,
 		"Molitz"  = 1,
 		"Cytine"  = 1,
+		*/
 		"Plasma"  = 25,
 		"Clown"   = 15,
 		"Phazon"  = 10
@@ -715,43 +721,43 @@
 
 /turf/unsimulated/mineral/uranium
 	name = "Uranium deposit"
-	icon_state = "uranium3"
+	icon_state = "rock_Uranium"
 	mineral = new /mineral/uranium
-	scan_state = "uranium3"
+	scan_state = "rock_Uranium"
 
 
 /turf/unsimulated/mineral/iron
 	name = "Iron deposit"
-	icon_state = "iron2"
+	icon_state = "rock_Iron"
 	mineral = new /mineral/iron
 
 
 /turf/unsimulated/mineral/diamond
 	name = "Diamond deposit"
-	icon_state = "diamond1"
+	icon_state = "rock_Diamond"
 	mineral = new /mineral/diamond
-	scan_state = "diamond1"
+	scan_state = "rock_Diamond"
 
 
 /turf/unsimulated/mineral/gold
 	name = "Gold deposit"
-	icon_state = "gold3"
+	icon_state = "rock_Gold"
 	mineral = new /mineral/gold
-	scan_state = "gold3"
+	scan_state = "rock_Gold"
 
 
 /turf/unsimulated/mineral/silver
 	name = "Silver deposit"
-	icon_state = "silver3"
+	icon_state = "rock_Silver"
 	mineral = new /mineral/silver
-	scan_state = "silver3"
+	scan_state = "rock_Silver"
 
 
 /turf/unsimulated/mineral/plasma
 	name = "Plasma deposit"
-	icon_state = "plasma1"
+	icon_state = "rock_Plasma"
 	mineral = new /mineral/plasma
-	scan_state = "plasma1"
+	scan_state = "rock_Plasma"
 
 
 /turf/unsimulated/mineral/clown
@@ -761,7 +767,7 @@
 	scan_state = "rock_Clown"
 
 
-/*/turf/unsimulated/mineral/phazon
+/turf/unsimulated/mineral/phazon
 	name = "Phazite deposit"
 	icon_state = "rock_Phazon"
 	mineral = new /mineral/phazon
@@ -831,7 +837,7 @@
 	name = "Molitz deposit"
 	icon_state = "rock_Molitz"
 	mineral = new /mineral/molitz
-*/
+
 ////////////////////////////////Gibtonite
 /turf/unsimulated/mineral/gibtonite
 	name = "Diamond deposit" //honk
@@ -844,7 +850,7 @@
 	var/activated_name = null
 
 /turf/unsimulated/mineral/gibtonite/New()
-	icon_state="diamond1"
+	icon_state="rock_Diamond"
 	det_time = rand(8,10) //So you don't know exactly when the hot potato will explode
 	..()
 
@@ -1010,9 +1016,3 @@
 /turf/unsimulated/floor/asteroid/plating
 	intact=0
 	icon_state="asteroidplating"
-
-/turf/simulated/floor/plating/cave_floor
-	icon = 'icons/turf/ground.dmi'
-	icon_state = "wground1"
-	name = "cave floor"
-	temperature = T0C+25

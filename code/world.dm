@@ -3,7 +3,6 @@
 	turf = /turf/simulated/floor/plating/cave_floor
 	view = "15x15"
 	cache_lifespan = 0	//stops player uploaded stuff from being kept in the rsc past the current session
-	//map_format = ISOMETRIC_MAP //HUEHUEHE
 
 #define RECOMMENDED_VERSION 501
 /world/New()
@@ -39,14 +38,15 @@
 	load_admins()
 	load_mods()
 	LoadBansjob()
-/*	if(config.usewhitelist)
-		load_whitelist()*/
+	if(config.usewhitelist)
+		load_whitelist()
 	if(config.usealienwhitelist)
 		load_alienwhitelist()
 	jobban_loadbanfile()
 	jobban_updatelegacybans()
 	appearance_loadbanfile()
-//	load_bwhitelist()
+	load_bwhitelist()
+	load_donator()
 	LoadBans()
 	SetupHooks() // /vg/
 
@@ -67,9 +67,9 @@
 	data_core = new /obj/effect/datacore()
 	paiController = new /datum/paiController()
 
-//	if(!setup_database_connection())
-//		world.log << "Your server failed to establish a connection with the feedback database."
-//	else
+	if(!setup_database_connection())
+		world.log << "Your server failed to establish a connection with the feedback database."
+	else
 		world.log << "Feedback database connection established."
 
 	plmaster = new /obj/effect/overlay()
@@ -294,7 +294,7 @@
 #define FAILED_DB_CONNECTION_CUTOFF 5
 var/failed_db_connections = 0
 
-/*proc/setup_database_connection()
+proc/setup_database_connection()
 
 	if(failed_db_connections > FAILED_DB_CONNECTION_CUTOFF)	//If it failed to establish a connection more than 5 times in a row, don't bother attempting to conenct anymore.
 		return 0
@@ -317,7 +317,7 @@ var/failed_db_connections = 0
 		failed_db_connections++		//If it failed, increase the failed connections counter.
 
 	return .
-*/
+
 //This proc ensures that the connection to the feedback database (global variable dbcon) is established
 proc/establish_db_connection()
 	if(failed_db_connections > FAILED_DB_CONNECTION_CUTOFF)
@@ -330,7 +330,7 @@ proc/establish_db_connection()
 	if(q.ErrorMsg())
 		dbcon.Disconnect()
 	if(!dbcon || !dbcon.IsConnected())
-		return //setup_database_connection()
+		return setup_database_connection()
 	else
 		return 1
 

@@ -1,5 +1,7 @@
 var/CMinutes = null
 var/savefile/Banlist
+var/list/bwhitelist
+
 
 /proc/CheckBan(var/ckey, var/id, var/address)
 	if(!Banlist)		// if Banlist cannot be located for some reason
@@ -227,7 +229,7 @@ var/savefile/Banlist
 	for (var/A in Banlist.dir)
 		RemoveBan(A)
 
-/*/proc/load_bwhitelist()
+/proc/load_bwhitelist()
 	log_admin("Loading whitelist")
 	bwhitelist = list()
 	var/DBConnection/dbcon1 = new()
@@ -251,4 +253,4 @@ var/savefile/Banlist
 			return 0
 	if (K in bwhitelist)
 		return 1
-	return 0*/
+	return 0

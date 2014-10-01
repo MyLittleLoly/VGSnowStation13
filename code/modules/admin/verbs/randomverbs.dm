@@ -52,7 +52,7 @@
 		src << "Only administrators may use this command."
 		return
 
-	var/msg = input("Message:", text("Subtle PM to [M.key]")) as text
+	var/msg = sanitize_uni(input("Message:", text("Subtle PM to [M.key]"))) as text
 
 	if (!msg)
 		return
@@ -62,7 +62,7 @@
 				if(M.mind.assigned_role == "Chaplain")
 					M << "\bold You hear the voice of [ticker.Bible_deity_name] in your head... \italic [sanitize(html_decode(msg))]"
 				else
-					M << "\bold You hear a voice in your head... \italic [sanitize(html_decode(msg))]"
+					M << "\bold You hear a voice in your head... \italic [sanitize_uni(html_decode(msg))]"
 
 	log_admin("SubtlePM: [key_name(usr)] -> [key_name(M)] : [msg]")
 	message_admins("\blue \bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [msg]", 1)
@@ -187,7 +187,7 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = 0)
 	var/show_log = alert(src, "Show ion message?", "Message", "Yes", "No")
 	if(show_log == "Yes")
 		command_alert("Ion storm detected near the station. Please check all AI-controlled equipment for errors.", "Anomaly Alert")
-		world << sound('sound/AI/ionstorm.ogg')
+		world << sound('sound/AI/ion_storm.ogg')
 
 	IonStorm(0)
 	feedback_add_details("admin_verb","ION") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
@@ -554,7 +554,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	var/show_log = alert(src, "Show ion message?", "Message", "Yes", "No")
 	if(show_log == "Yes")
 		command_alert("Ion storm detected near the station. Please check all AI-controlled equipment for errors.", "Anomaly Alert")
-		world << sound('sound/AI/ionstorm.ogg')
+		world << sound('sound/AI/ion_storm.ogg')
 	feedback_add_details("admin_verb","IONC") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_rejuvenate(mob/living/M as mob in mob_list)
@@ -604,7 +604,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		if("No")
 			world << "\red New NanoTrasen Update available at all communication consoles."
 
-	world << sound('sound/AI/commandreport.ogg')
+	world << sound('sound/AI/command_report.ogg')
 	log_admin("[key_name(src)] has created a command report: [input]")
 	message_admins("[key_name_admin(src)] has created a command report", 1)
 	feedback_add_details("admin_verb","CCR") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
@@ -621,7 +621,11 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		log_admin("[key_name(usr)] deleted [O] at ([O.x],[O.y],[O.z])")
 		message_admins("[key_name_admin(usr)] deleted [O] at ([O.x],[O.y],[O.z])", 1)
 		feedback_add_details("admin_verb","DEL") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-		qdel(O)
+		if(istype(O,/turf))
+			var/turf/T=O
+			T.ChangeTurf(universe.space_type)
+		else
+			qdel(O)
 
 /client/proc/cmd_admin_list_open_jobs()
 	set category = "Admin"

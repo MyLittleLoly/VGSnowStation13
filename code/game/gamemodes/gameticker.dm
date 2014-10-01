@@ -41,17 +41,11 @@ var/global/datum/controller/gameticker/ticker
 
 /datum/controller/gameticker/proc/pregame()
 	login_music = pick(\
-	'sound/music/space.ogg',\
-	'sound/music/traitor.ogg',\
 	'sound/music/space_oddity.ogg',\
 	'sound/music/title1.ogg',\
 	'sound/music/title2.ogg',\
-	'sound/music/clown.ogg',\
-	'sound/music/robocop.ogg',\
 	'sound/music/gaytony.ogg',\
-	'sound/music/rocketman.ogg',\
-	'sound/music/2525.ogg',\
-	'sound/music/moonbaseoddity.ogg')
+	'sound/music/whatisthissong.ogg')
 	do
 		pregame_timeleft = 300
 		world << "<B><FONT color='blue'>Welcome to the pre-game lobby!</FONT></B>"
@@ -334,6 +328,9 @@ var/global/datum/controller/gameticker/ticker
 
 			spawn
 				declare_completion()
+				sleep(50)
+				CallHook("Reboot",list())
+				world.Reboot()
 
 			spawn(50)
 				if (mode.station_was_nuked)
@@ -347,6 +344,7 @@ var/global/datum/controller/gameticker/ticker
 				else if(!delay_end)
 					sleep(restart_timeout)
 					if(!delay_end)
+						CallHook("Reboot",list())
 						world.Reboot()
 					else
 						world << "\blue <B>An admin has delayed the round end</B>"

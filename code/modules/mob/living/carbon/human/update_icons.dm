@@ -136,14 +136,19 @@ Please contact me on #coderbus IRC. ~Carn x
 /mob/living/carbon/human/update_icons()
 	update_hud()		//TODO: remove the need for this
 
-	if(overlays.len != overlays_standing.len)
+	if(species && species.override_icon)
 		overlays.len = 0
-		overlays.len = overlays_standing.len
-		icon = stand_icon
+		icon = species.override_icon
+		icon_state = "[lowertext(species.name)]_[gender][(mutations & M_FAT)?"_fat":""]"
+	else
+		if(overlays.len != overlays_standing.len)
+			overlays.len = 0
+			overlays.len = overlays_standing.len
+			icon = stand_icon
 
-		for(var/overlay in overlays_standing)
-			if(overlay)
-				overlays += overlay
+			for(var/overlay in overlays_standing)
+				if(overlay)
+					overlays += overlay
 
 	update_transform()
 
@@ -204,7 +209,7 @@ proc/get_damage_icon_part(damage_state, body_part)
 
 	var/husk = (M_HUSK in src.mutations)  //100% unnecessary -Agouri	//nope, do you really want to iterate through src.mutations repeatedly? -Pete
 	var/fat = (M_FAT in src.mutations)
-	var/hulk = (M_HULK in src.mutations)
+	var/hulk = (M_HULK in src.mutations) && species.name == "Horror" // Part of the species.
 	var/skeleton = (SKELETON in src.mutations)
 
 	if(gender == PLURAL && !fat)
@@ -234,6 +239,9 @@ proc/get_damage_icon_part(damage_state, body_part)
 				temp = part.get_icon(g,fat)
 			else
 				temp = part.get_icon(g,0)
+
+			if(part.status & ORGAN_ROBOT)
+				temp.GrayScale()
 
 			if(part.status & ORGAN_DEAD)
 				temp.ColorTone(necrosis_color_mod)
@@ -279,6 +287,9 @@ proc/get_damage_icon_part(damage_state, body_part)
 		mask.MapColors(0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,0,0)
 		husk_over.Blend(mask, ICON_ADD)
 		stand_icon.Blend(husk_over, ICON_OVERLAY)
+
+	if (species.flags & HAS_SKIN_COLOR)
+		stand_icon.Blend(rgb(r_skin, g_skin, b_skin), ICON_ADD)
 
 	if(has_head)
 		//Eyes
@@ -478,6 +489,12 @@ proc/get_damage_icon_part(damage_state, body_part)
 //vvvvvv UPDATE_INV PROCS vvvvvv
 
 /mob/living/carbon/human/update_inv_w_uniform(var/update_icons=1)
+
+	var/fat = (M_FAT in src.mutations)
+
+	if(gender == PLURAL && !fat)
+		gender = prev_gender
+
 	if(w_uniform && istype(w_uniform, /obj/item/clothing/under) )
 		w_uniform.screen_loc = ui_iclothing
 		var/t_color = w_uniform._color
@@ -841,8 +858,11 @@ proc/get_damage_icon_part(damage_state, body_part)
 	overlays_standing[TAIL_LAYER] = null
 
 	if(species.tail && species.flags & HAS_TAIL)
-		if(!wear_suit || !(wear_suit.flags_inv & HIDEJUMPSUIT) && !istype(wear_suit, /obj/item/clothing/suit/space))
-			overlays_standing[TAIL_LAYER] = image("icon" = 'icons/effects/species.dmi', "icon_state" = "[species.tail]_s")
+		if(!wear_suit || !(wear_suit.flags_inv) && !istype(wear_suit, /obj/item/clothing/suit/space))
+			var/icon/tail_s = new/icon("icon" = 'icons/effects/species.dmi', "icon_state" = "[species.tail]_s")
+			tail_s.Blend(rgb(r_skin, g_skin, b_skin), ICON_ADD)
+
+			overlays_standing[TAIL_LAYER]	= image(tail_s)
 
 	if(update_icons)
 		update_icons()
